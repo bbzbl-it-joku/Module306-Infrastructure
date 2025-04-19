@@ -1,0 +1,19 @@
+# Proxmox connection configuration
+proxmox_server_url         = "https://your-proxmox-server:8006"
+proxmox_web_username       = "root@pam"
+proxmox_ssh_username       = "root"
+# proxmox_user_password    = "your-password"  # Better set via environment variable TF_VAR_proxmox_user_password
+# proxmox_api_token        = "your-token"     # Better set via environment variable TF_VAR_proxmox_api_token
+proxmox_server_ssl_insecure = true  # Set to false in production environments
+
+# VM service account configuration
+# vm_sa_user_password      = "your-sa-password"  # Better set via environment variable TF_VAR_vm_sa_user_password
+vm_sa_user_ssh_keys        = [
+  "ssh-rsa AAAAB3NzaC1yc2EAAAAD... your-public-key",
+  # Add additional public keys as needed
+]
+
+# Global configuration
+environment = "dev"  # Options: dev, test, prod
+owner       = "IT Operations"
+project     = "Infrastructure"
