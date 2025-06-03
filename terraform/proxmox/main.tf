@@ -21,23 +21,6 @@
 #   }
 # }
 
-# Default provider configuration
-provider "proxmox" {
-  endpoint  = var.proxmox_server_url
-  insecure  = var.proxmox_server_ssl_insecure
-
-  # Token-based authentication (preferred method)
-  api_token = var.proxmox_api_token
-  ssh {
-    agent    = true
-    username = var.proxmox_ssh_username
-  }
-
-  # Uncomment for credential-based authentication
-  # username = var.proxmox_web_username
-  # password = var.proxmox_user_password
-}
-
 # Local variables for common configurations
 locals {
   common_tags = ["terraform-managed", "almalinux9"]

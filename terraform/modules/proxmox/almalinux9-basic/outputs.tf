@@ -27,11 +27,6 @@ output "ipv4_addresses" {
 }
 
 output "primary_ipv4_address" {
-  description = "The primary IPv4 address of the VM (first address from first network interface)"
-  value       = length(proxmox_virtual_environment_vm.almalinux9-basic.ipv4_addresses) > 0 ? proxmox_virtual_environment_vm.almalinux9-basic.ipv4_addresses[0][0] : ""
-}
-
-output "vm_status" {
-  description = "The current status of the VM (running, stopped, etc.)"
-  value       = proxmox_virtual_environment_vm.almalinux9-basic.status
+  description = "The primary IPv4 address of the VM (excluding loopback)"
+  value       = length(proxmox_virtual_environment_vm.almalinux9-basic.ipv4_addresses) > 1 ? proxmox_virtual_environment_vm.almalinux9-basic.ipv4_addresses[1][0] : ""
 }

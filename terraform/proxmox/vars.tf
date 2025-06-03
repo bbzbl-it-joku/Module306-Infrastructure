@@ -29,6 +29,7 @@ variable "proxmox_user_password" {
     description = "The password for Proxmox authentication when using credentials"
     type = string
     sensitive = true
+    default = ""
 }
 
 variable "proxmox_api_token" {
