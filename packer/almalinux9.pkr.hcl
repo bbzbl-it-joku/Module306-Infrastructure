@@ -7,7 +7,7 @@
 *
 * Author: Joshua Kunz
 * Date: April 20, 2025
-* Version: 1.0
+* Version: 1.1 - Updated for modern Packer syntax
 *
 * This configuration:
 * - Uses GitHub-hosted kickstart files instead of the Packer HTTP server
@@ -21,7 +21,7 @@ packer {
   
   required_plugins {
     proxmox = {
-      version = ">= 1.1.2"
+      version = "= 1.2.1"
       source  = "github.com/hashicorp/proxmox"
     }
   }
@@ -35,8 +35,8 @@ locals {
   // Template description with timestamp
   template_description = "AlmaLinux 9 Minimal UEFI Template. Built ${local.build_timestamp}"
   
-  // Complete GitHub URL for kickstart
-  kickstart_url = "${var.github_raw_url}/files/kickstart/ks.cfg"
+  // Kickstart URL using Packer's HTTP server
+  kickstart_url = "http://dev.jokulab.ch:{{ .HTTPPort }}/ks.cfg"
 }
 
 // Resource Definition for the VM Template
@@ -62,13 +62,15 @@ source "proxmox-iso" "almalinux9" {
   template_description  = local.template_description
 
   /*
-   * VM OS Settings
+   * VM OS Settings - Updated syntax
    * -------------
    * Installation media and boot settings
    */
-  iso_file         = var.iso_file
-  iso_storage_pool = var.iso_storage_pool
-  unmount_iso      = true
+  boot_iso {
+    iso_file         = var.iso_file
+    iso_storage_pool = var.iso_storage_pool
+    unmount          = true
+  }
   
   /*
    * VM System Settings
@@ -95,7 +97,8 @@ source "proxmox-iso" "almalinux9" {
   disks {
     disk_size           = var.disk_size
     storage_pool        = var.storage_pool
-    type                = "scsi"
+    type                = "scsi"    
+    format              = "raw"
   }
 
   /*
@@ -124,17 +127,23 @@ source "proxmox-iso" "almalinux9" {
    * -----------------------------
    * Boot command and connection settings for provisioning
    */
-  // Boot command using GitHub-hosted kickstart instead of HTTP server
+  // Boot command using Packer's HTTP server from dev.jokulab.ch
   boot_command = [
-    "<up><wait>e<wait><down><wait><down><wait><end>",
-    " inst.text",
-    " inst.ks=${local.kickstart_url} ",
-    "<wait><F10>"
+    "<up><wait>",
+    "e<wait>",
+    "<down><wait><down><wait>",
+    "<end><wait>",
+    " inst.text inst.ks=${local.kickstart_url}",
+    "<wait>",
+    "<f10><wait>"
   ]
   boot_wait = "10s"
 
-  // This directory is required by Packer but won't be used by the VM
+  // HTTP server configuration - Packer will serve files from this directory
   http_directory = "files/kickstart"
+  http_bind_address = "0.0.0.0"  // Bind to all interfaces so VM can access it
+  http_port_min = 8000
+  http_port_max = 8100
 
   /*
    * SSH Settings

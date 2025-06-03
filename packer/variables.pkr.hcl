@@ -7,12 +7,11 @@
 *
 * Variable organization:
 * 1. Proxmox Connection Variables
-* 2. GitHub Configuration Variables
-* 3. VM General Configuration Variables
-* 4. VM Hardware Configuration Variables
-* 5. VM Storage Configuration Variables
-* 6. Network Configuration Variables
-* 7. Security Variables
+* 2. VM General Configuration Variables
+* 3. VM Hardware Configuration Variables
+* 4. VM Storage Configuration Variables
+* 5. Network Configuration Variables
+* 6. Security Variables
 */
 
 //----------------------------------------------------------------------
@@ -47,16 +46,7 @@ variable "proxmox_skip_tls_verify" {
 }
 
 //----------------------------------------------------------------------
-// 2. GitHub Configuration Variables
-//----------------------------------------------------------------------
-
-variable "github_raw_url" {
-  type        = string
-  description = "GitHub raw URL where kickstart and other files are hosted (e.g., https://raw.githubusercontent.com/username/repo/branch)"
-}
-
-//----------------------------------------------------------------------
-// 3. VM General Configuration Variables
+// 2. VM General Configuration Variables
 //----------------------------------------------------------------------
 
 variable "vm_id" {
@@ -70,7 +60,7 @@ variable "vm_name" {
 }
 
 //----------------------------------------------------------------------
-// 4. VM Hardware Configuration Variables
+// 3. VM Hardware Configuration Variables
 //----------------------------------------------------------------------
 
 variable "vm_cores" {
@@ -89,7 +79,7 @@ variable "vm_memory" {
 }
 
 //----------------------------------------------------------------------
-// 5. VM Storage Configuration Variables
+// 4. VM Storage Configuration Variables
 //----------------------------------------------------------------------
 
 variable "iso_file" {
@@ -118,7 +108,7 @@ variable "efi_storage_pool" {
 }
 
 //----------------------------------------------------------------------
-// 6. Network Configuration Variables
+// 5. Network Configuration Variables
 //----------------------------------------------------------------------
 
 variable "network_bridge" {
@@ -127,7 +117,7 @@ variable "network_bridge" {
 }
 
 //----------------------------------------------------------------------
-// 7. Security Variables
+// 6. Security Variables
 //----------------------------------------------------------------------
 
 variable "vm_root_pw" {
