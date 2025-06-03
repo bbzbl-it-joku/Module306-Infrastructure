@@ -46,9 +46,6 @@ datasource:
 # Set maximum wait time for metadata services
 max_wait: 120
 
-# Disable automatic modules for better control
-disable_network_config: True
-
 # Preserve instance hostname
 preserve_hostname: false
 
