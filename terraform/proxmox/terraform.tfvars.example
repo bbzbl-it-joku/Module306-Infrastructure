@@ -17,3 +17,8 @@ vm_sa_user_ssh_keys        = [
 environment = "dev"  # Options: dev, test, prod
 owner       = "IT Operations"
 project     = "Infrastructure"
+
+# OPNSense connection configuration
+opnsense_server_uri = "https://192.168.1.1"
+opnsense_api_key    = "your-key"
+opnsense_api_secret = "your-secret"

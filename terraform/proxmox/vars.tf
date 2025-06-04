@@ -84,3 +84,25 @@ variable "project" {
     type = string
     default = "Infrastructure"
 }
+
+//----------------------------------------------------------------------
+// OPNSense Connection Variables
+//----------------------------------------------------------------------
+
+variable "opnsense_server_uri" {
+  description = "The URL of the OPNSense server that Terraform connects to"
+  type        = string
+  default     = "https://192.168.1.1"
+}
+
+variable "opnsense_api_key" {
+  description = "The API key for OPNSense authentication"
+  type        = string
+  sensitive   = true
+}
+
+variable "opnsense_api_secret" {
+  description = "The API secret for OPNSense authentication"
+  type        = string
+  sensitive   = true
+}

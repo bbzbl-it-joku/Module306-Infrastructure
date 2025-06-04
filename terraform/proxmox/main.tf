@@ -23,15 +23,13 @@
 
 # Local variables for common configurations
 locals {
-  common_tags = ["terraform-managed", "almalinux9"]
-  
   # Standard disk configurations
   standard_disk = [
     { 
       datastore_id = "local-lvm" 
       file_format  = "raw" 
       interface    = "scsi0" 
-      size         = "32" 
+      size         = "16" 
       ssd          = false 
     }
   ]

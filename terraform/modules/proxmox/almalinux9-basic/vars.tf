@@ -178,6 +178,16 @@ variable "vm_ip_gateway" {
   default = ""
 }
 
+variable "vm_cpu_cores" {
+  type = number
+  default = 2
+}
+
+variable "vm_memory" {
+  type = number
+  default = 2048
+}
+
 //----------------------------------------------------------------------
 // 5. VM Template Configuration Variables
 //----------------------------------------------------------------------
@@ -228,7 +238,7 @@ variable "vm_sa_user_ssh_keys" {
 
 locals {
   # Ensure critical tags are always included
-  vm_all_tags = concat(var.vm_tags, ["terraform", "almalinux9", "ansible_semaphore"])
+  vm_all_tags = concat(var.vm_tags, ["terraform-managed", "almalinux9", "ansible_semaphore"])
   
   # Ensure description includes management information
   vm_full_description = replace(var.vm_description, "^(?!.*Managed by Terraform & Ansible Semaphore).*", "${var.vm_description} Managed by Terraform & Ansible Semaphore")

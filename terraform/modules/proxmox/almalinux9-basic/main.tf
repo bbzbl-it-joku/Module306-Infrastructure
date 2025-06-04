@@ -30,6 +30,16 @@ resource "proxmox_virtual_environment_vm" "almalinux9-basic" {
   # Target Proxmox node
   node_name         = var.vm_node_name
 
+  cpu {
+    cores = var.vm_cpu_cores
+    type = "host"
+    units = 100
+  }
+
+  memory {
+    dedicated = var.vm_memory
+  }
+
   # QEMU Guest Agent configuration
   agent {
     enabled         = true
