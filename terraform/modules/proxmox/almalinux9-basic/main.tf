@@ -21,7 +21,7 @@ resource "proxmox_virtual_environment_vm" "almalinux9-basic" {
   name              = var.vm_name
   vm_id             = var.vm_id
   description       = local.vm_full_description
-  tags              = local.vm_all_tags
+  tags              = var.vm_tags
 
   # Power state management
   started           = var.vm_start

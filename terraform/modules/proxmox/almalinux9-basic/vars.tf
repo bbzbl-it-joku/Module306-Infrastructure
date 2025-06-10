@@ -237,9 +237,6 @@ variable "vm_sa_user_ssh_keys" {
 //----------------------------------------------------------------------
 
 locals {
-  # Ensure critical tags are always included
-  vm_all_tags = concat(var.vm_tags, ["terraform-managed", "almalinux9", "ansible_semaphore"])
-  
   # Ensure description includes management information
   vm_full_description = replace(var.vm_description, "^(?!.*Managed by Terraform & Ansible Semaphore).*", "${var.vm_description} Managed by Terraform & Ansible Semaphore")
 }
