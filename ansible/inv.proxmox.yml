@@ -1,0 +1,81 @@
+---
+plugin: community.general.proxmox
+
+# Use AWX custom credential variables
+url: "{{ proxmox_url | default('https://prdpve01.jokulab.ch:8006') }}"
+validate_certs: "{{ proxmox_validate_certs | default(false) }}"
+
+# AWX Credential fields - these will be injected by AWX
+user: "{{ proxmox_user }}"
+token_id: "{{ proxmox_token_id }}"
+token_secret: "{{ proxmox_token_secret }}"
+
+# Alternative: Use password authentication if tokens aren't available
+# password: "{{ proxmox_password }}"
+
+# What to include in inventory
+want_facts: "{{ proxmox_want_facts | default(true) }}"
+want_proxmox_nodes_ansible_host: "{{ proxmox_want_nodes_ansible_host | default(true) }}"
+
+# Configurable filters via AWX variables
+filters:
+  - "{{ proxmox_status_filter | default('proxmox_status == \"running\"') }}"
+
+# Additional filters that can be set via AWX extra vars
+{% if proxmox_additional_filters is defined %}
+{% for filter in proxmox_additional_filters %}
+  - "{{ filter }}"
+{% endfor %}
+{% endif %}
+
+keyed_groups:
+  # Group by each individual tag
+  - key: proxmox_tags_parsed | list
+    prefix: "{{ proxmox_tag_prefix | default('tag') }}"
+    separator: "{{ proxmox_tag_separator | default('_') }}"
+  
+  # Group by node
+  - key: proxmox_node
+    prefix: "{{ proxmox_node_prefix | default('node') }}"
+    separator: "{{ proxmox_node_separator | default('_') }}"
+  
+  # Group by VM type
+  - key: proxmox_vmtype
+    prefix: "{{ proxmox_type_prefix | default('type') }}"
+    separator: "{{ proxmox_type_separator | default('_') }}"
+
+# Additional keyed groups via AWX variables
+{% if proxmox_custom_keyed_groups is defined %}
+{% for group in proxmox_custom_keyed_groups %}
+  - key: "{{ group.key }}"
+    prefix: "{{ group.prefix }}"
+    separator: "{{ group.separator | default('_') }}"
+{% endfor %}
+{% endif %}
+
+# Compose additional variables
+compose:
+  # Create a simplified status variable
+  vm_status: proxmox_status
+  
+  # Extract primary IP address with configurable interface names
+  primary_ip: >-
+    proxmox_agent_interfaces | selectattr('name', 'match', '^({{ proxmox_primary_interfaces | default('eth0|ens18') }})$') | 
+    map(attribute='ip-addresses') | flatten | 
+    select('match', '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/') | 
+    first | regex_replace('/.*$', '') | default(ansible_host)
+  
+  # Additional composed variables via AWX
+  {% if proxmox_custom_compose is defined %}
+  {% for key, value in proxmox_custom_compose.items() %}
+  {{ key }}: "{{ value }}"
+  {% endfor %}
+  {% endif %}
+
+# Optional: Cache settings for better performance
+{% if proxmox_cache_enabled | default(false) %}
+cache: true
+cache_plugin: "{{ proxmox_cache_plugin | default('memory') }}"
+cache_timeout: "{{ proxmox_cache_timeout | default(3600) }}"
+cache_connection: "{{ proxmox_cache_connection | default('') }}"
+{% endif %}
