@@ -21,13 +21,6 @@ want_proxmox_nodes_ansible_host: "{{ proxmox_want_nodes_ansible_host | default(t
 filters:
   - "{{ proxmox_status_filter | default('proxmox_status == \"running\"') }}"
 
-# Additional filters that can be set via AWX extra vars
-{% if proxmox_additional_filters is defined %}
-{% for filter in proxmox_additional_filters %}
-  - "{{ filter }}"
-{% endfor %}
-{% endif %}
-
 keyed_groups:
   # Group by each individual tag
   - key: proxmox_tags_parsed | list
@@ -44,15 +37,6 @@ keyed_groups:
     prefix: "{{ proxmox_type_prefix | default('type') }}"
     separator: "{{ proxmox_type_separator | default('_') }}"
 
-# Additional keyed groups via AWX variables
-{% if proxmox_custom_keyed_groups is defined %}
-{% for group in proxmox_custom_keyed_groups %}
-  - key: "{{ group.key }}"
-    prefix: "{{ group.prefix }}"
-    separator: "{{ group.separator | default('_') }}"
-{% endfor %}
-{% endif %}
-
 # Compose additional variables
 compose:
   # Create a simplified status variable
@@ -64,18 +48,8 @@ compose:
     map(attribute='ip-addresses') | flatten | 
     select('match', '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/') | 
     first | regex_replace('/.*$', '') | default(ansible_host)
-  
-  # Additional composed variables via AWX
-  {% if proxmox_custom_compose is defined %}
-  {% for key, value in proxmox_custom_compose.items() %}
-  {{ key }}: "{{ value }}"
-  {% endfor %}
-  {% endif %}
 
 # Optional: Cache settings for better performance
-{% if proxmox_cache_enabled | default(false) %}
-cache: true
+cache: "{{ proxmox_cache_enabled | default(false) }}"
 cache_plugin: "{{ proxmox_cache_plugin | default('memory') }}"
 cache_timeout: "{{ proxmox_cache_timeout | default(3600) }}"
-cache_connection: "{{ proxmox_cache_connection | default('') }}"
-{% endif %}
